@@ -1,6 +1,7 @@
 package appp.primes;
 
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -8,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 public class GeneratePrimesTest {
 
     @Test
-    public void testPrimes(){
+    public void testPrimes() {
         int[] nullArray = PrimeGenerator.generatePrimeNumbers(0);
         assertEquals(0, nullArray.length);
 
@@ -25,4 +26,21 @@ public class GeneratePrimesTest {
         assertEquals(25, centArray.length);
         assertEquals(97, centArray[24]);
     }
+
+    public void testExhaustive() {
+        for (int i = 2; i < 500; i++)
+            verifyPrimeList(PrimeGenerator.generatePrimeNumbers(i));
+    }
+
+    private void verifyPrimeList(int[] list) {
+        for (int i : list)
+            verifyPrime(list[i]);
+    }
+
+    private void verifyPrime(int n) {
+        for (int factor = 2; factor < n; factor++)
+            Assert.assertTrue(n % factor != 0);
+    }
+
+
 }
