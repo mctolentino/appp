@@ -1,45 +1,69 @@
 package appp.bowlingkata;
 
 public class Game {
-    private int score;
-    private int[] gameThrows = new int[21];
-    private int currentThrow = 0;
-    private int currentFrame = 1;
+    private int currentFrame = 0;
     private boolean isFirstThrow = true;
-    private int ball;
+    private Scorer scorer = new Scorer();
 
-    public int score() {
-        return scoreForFrame(currentFrame - 1);
+    int score() {
+        return scoreForFrame(currentFrame);
     }
 
-    public void add(int pins) {
-        gameThrows[currentThrow++] = pins;
-        this.score += pins;
-
+    void add(int pins) {
+        scorer.addThrow(pins);
         adjustCurrentFrame(pins);
     }
 
     private void adjustCurrentFrame(int pins) {
-        if (isFirstThrow) {
-            if (pins == 10) { //strike
-                currentFrame++;
-            } else {
-                isFirstThrow = false;
-            }
+        if (lastBallInFrame(pins)) {
+            advanceFrame();
         } else {
-            isFirstThrow = true;
-            currentFrame++;
-        }
-        if (currentFrame > 11) {
-            currentFrame = 11;
+            isFirstThrow = false;
         }
     }
 
+    private boolean lastBallInFrame(int pins) {
+        return strike(pins) || (!isFirstThrow);
+    }
 
-    public int scoreForFrame(int theFrame) {
+    private boolean strike(int pins) {
+        return (isFirstThrow && pins == 10);
+    }
+
+    private void advanceFrame() {
+        currentFrame++;
+        if (currentFrame > 10)
+            currentFrame = 10;
+    }
+
+    int scoreForFrame(int theFrame) {
+        return scorer.scoreForFrame(theFrame);
+    }
+
+    private boolean adjustFrameForStrike(int pins) {
+        if (pins == 10) {
+            advanceFrame();
+            return true;
+        }
+        return false;
+    }
+
+    int currentFrame() {
+        return this.currentFrame;
+    }
+}
+
+class Scorer {
+    private int ball;
+    private int[] gameThrows = new int[21];
+    private int currentThrow;
+
+    int scoreForFrame(int theFrame) {
         int score = 0;
         ball = 0;
-        for (int currentFrame = 0; currentFrame < theFrame; currentFrame++) {
+        for (int currentFrame = 0;
+             currentFrame < theFrame;
+             currentFrame++) {
             if (strike()) {
                 score += 10 + nextTwoBallsForStrike();
                 ball++;
@@ -55,26 +79,34 @@ public class Game {
     }
 
     private int nextTwoBallsForStrike() {
-        return gameThrows[ball + 1] + gameThrows[ball + 2];
-    }
-
-    private boolean strike() {
-        return gameThrows[ball] == 10;
+        return nextThrow() + gameThrows[ball + 2];
     }
 
     private int nextBallForSpare() {
         return gameThrows[ball + 2];
     }
 
+    private boolean strike() {
+        return currentThrow() == 10;
+    }
+
     private boolean spare() {
-        return twoBallsInFrame() == 10;
+        return currentThrow() + nextThrow() == 10;
+    }
+
+    private int nextThrow() {
+        return gameThrows[ball + 1];
+    }
+
+    private int currentThrow() {
+        return gameThrows[ball];
     }
 
     private int twoBallsInFrame() {
-        return gameThrows[ball] + gameThrows[ball + 1];
+        return currentThrow() + nextThrow();
     }
 
-    public int currentFrame() {
-        return this.currentFrame;
+    void addThrow(int pins) {
+        gameThrows[currentThrow++] = pins;
     }
 }
