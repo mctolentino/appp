@@ -1,4 +1,4 @@
-package appp.primes;
+package java.appp.primes;
 
 
 import org.junit.Assert;

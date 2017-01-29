@@ -1,4 +1,4 @@
-package appp.htw;
+package java.appp.htw;
 
 
 import org.junit.Assert;

@@ -1,4 +1,4 @@
-package appp.payroll;
+package java.appp.payroll;
 
 public class Payroll {
     private final CheckWriter checkWriter;

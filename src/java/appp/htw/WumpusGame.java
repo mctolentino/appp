@@ -1,4 +1,4 @@
-package appp.htw;
+package java.appp.htw;
 
 public class WumpusGame {
     public void connect(int i, int i1, String e) {
